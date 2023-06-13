@@ -4,6 +4,7 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        Console.WriteLine("");
         Console.WriteLine("Mindfulness Program");
         Console.WriteLine("-------------------");
 
@@ -17,6 +18,8 @@ public class Program
 
             Console.Write("Enter your choice: ");
             string choice = Console.ReadLine();
+
+            Console.Clear();
 
             switch (choice)
             {
@@ -49,7 +52,9 @@ public class Program
 
     private static void SetDuration(MindfulnessActivity activity)
     {
-        Console.Write("Enter the duration in seconds: ");
+        Console.WriteLine($"Welcome to the {activity}!");
+        Console.WriteLine("");
+        Console.Write("How long, in second, would you like your session? : ");
         if (int.TryParse(Console.ReadLine(), out int duration))
         {
             activity.Duration = duration;
@@ -59,5 +64,6 @@ public class Program
             Console.WriteLine("Invalid duration. Using default duration of 60 seconds.");
             activity.Duration = 60;
         }
-    }
+    Console.Clear();
+   }
 }

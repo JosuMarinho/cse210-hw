@@ -4,16 +4,16 @@ using System.Threading;
 public class ListingActivity : MindfulnessActivity
 {
     private string[] listingPrompts = {
-        "List as many fruits as you can.",
-        "List as many countries as you can.",
-        "List as many animals as you can.",
-        "List as many colors as you can."
+        "When have you felt the Holy Ghost this month?.",
+        "What a great action you received this week.",
+        "What are you thankful to God for?.",
+        "What made you laugh this week?."
     };
 
     public ListingActivity()
     {
         Name = "Listing Activity";
-        Description = "This activity will help you practice focus and concentration by listing items in a specific category.";
+        Description = "This activity will help you reflect on the good things in your life by having a list as many things as you can in certain area.";
     }
 
     protected override void PerformActivity()
@@ -26,14 +26,15 @@ public class ListingActivity : MindfulnessActivity
 
         for (int i = 0; i < Duration; i++)
         {
-            Console.WriteLine("Enter an item: ");
+            Console.WriteLine("You may begin in:");
             string item = Console.ReadLine();
             count++;
 
             Console.WriteLine("Keep listing...");
             Thread.Sleep(1000);
         }
-
+        Console.WriteLine("Well Done!.");
+        Console.WriteLine("");
         Console.WriteLine($"You have listed {count} items.");
     }
 }
