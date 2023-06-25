@@ -10,22 +10,19 @@ class Program
 
     static void Main(string[] args)
     {
-        LoadGoals();
-
         bool exit = false;
         while (!exit)
         {
-            Console.WriteLine("------- Main Menu ------");
-            Console.WriteLine("1. Create simple Goal");
-            Console.WriteLine("2. Create eternal Goal");
-            Console.WriteLine("3. Create checklist Goal");
-            Console.WriteLine("4. Register event");
-            Console.WriteLine("5. Show Goal list");
-            Console.WriteLine("6. Show score");
-            Console.WriteLine("7. Save Goals");
-            Console.WriteLine("8. Load targets");
-            Console.WriteLine("9. Quit");
-            Console.WriteLine("--------------------------");
+            Console.WriteLine("You have {0} points.", score);
+            Console.WriteLine();
+            Console.WriteLine("Menu Options:");
+            Console.WriteLine("1. Create New Goal");
+            Console.WriteLine("2. List Goals");
+            Console.WriteLine("3. Save Goals");
+            Console.WriteLine("4. Load Goals");
+            Console.WriteLine("5. Record Event");
+            Console.WriteLine("6. Quit");
+            Console.WriteLine();
             Console.Write("Select a choice from the menu: ");
             int option = Convert.ToInt32(Console.ReadLine());
             Console.WriteLine();
@@ -33,30 +30,21 @@ class Program
             switch (option)
             {
                 case 1:
-                    CreateSimpleGoal();
+                    CreateGoalSubMenu();
                     break;
                 case 2:
-                    CreateEternalGoal();
-                    break;
-                case 3:
-                    CreateCheckListGoal();
-                    break;
-                case 4:
-                    RegisterEvent();
-                    break;
-                case 5:
                     ShowGoalList();
                     break;
-                case 6:
-                    ShowScore();
-                    break;
-                case 7:
+                case 3:
                     SaveGoals();
                     break;
-                case 8:
+                case 4:
                     LoadGoals();
                     break;
-                case 9:
+                case 5:
+                    RegisterEvent();
+                    break;
+                case 6:
                     exit = true;
                     break;
                 default:
@@ -68,9 +56,36 @@ class Program
         }
     }
 
+    static void CreateGoalSubMenu()
+    {
+        Console.WriteLine("The types of Goals are:");
+        Console.WriteLine("1. Simple Goal");
+        Console.WriteLine("2. Eternal Goal");
+        Console.WriteLine("3. Checklist Goal");
+        Console.Write("Which type of goal would you like to create? ");
+        int option = Convert.ToInt32(Console.ReadLine());
+        Console.WriteLine();
+
+        switch (option)
+        {
+            case 1:
+                CreateSimpleGoal();
+                break;
+            case 2:
+                CreateEternalGoal();
+                break;
+            case 3:
+                CreateCheckListGoal();
+                break;
+            default:
+                Console.WriteLine("Invalid option. Try again.");
+                break;
+        }
+    }
+
     static void CreateSimpleGoal()
     {
-        Console.WriteLine("----- Create SimpleGoal -----");
+        Console.WriteLine("----- Create Simple Goal -----");
         Console.Write("Enter the Goal name: ");
         string name = Console.ReadLine();
         Console.Write("What is a short description of your goal?: ");
@@ -85,7 +100,7 @@ class Program
         };
 
         goals.Add(goal);
-         Console.WriteLine($"The simple goal '{name}' has been created.");
+        Console.WriteLine($"The simple goal '{name}' has been created.");
     }
 
     static void CreateEternalGoal()
@@ -105,7 +120,7 @@ class Program
         };
 
         goals.Add(goal);
-        Console.WriteLine($"The eternal goal '{name}' has been created..");
+        Console.WriteLine($"The eternal goal '{name}' has been created.");
     }
 
     static void CreateCheckListGoal()
@@ -155,11 +170,6 @@ class Program
             Console.WriteLine();
             goal.ShowDetails();
         }
-    }
-
-    static void ShowScore()
-    {
-        Console.WriteLine($"Current score: {score}");
     }
 
     static void SaveGoals()
