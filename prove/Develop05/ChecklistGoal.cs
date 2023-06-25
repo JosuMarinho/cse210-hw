@@ -1,5 +1,6 @@
 class CheckListGoal : Goal
 {
+    public int CompletionCount { get; set; }
     public int DesiredCount { get; set; }
     public int RegisteredCount { get; set; }
     public int Bonus { get; set; }

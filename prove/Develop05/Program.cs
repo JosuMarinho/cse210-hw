@@ -5,24 +5,26 @@ using System.Text.Json;
 
 class Program
 {
-    private static List<Goal> goals = new List<Goal>();
-    private static int score = 0;
+    private static List<Goal> _goals = new List<Goal>();
+    private static int _score = 0;
 
     static void Main(string[] args)
     {
+        LoadGoals();
+
         bool exit = false;
         while (!exit)
         {
-            Console.WriteLine("You have {0} points.", score);
+            Console.WriteLine("Current Score: " + _score);
             Console.WriteLine();
-            Console.WriteLine("Menu Options:");
+            Console.WriteLine("------- Main Menu ------");
             Console.WriteLine("1. Create New Goal");
             Console.WriteLine("2. List Goals");
             Console.WriteLine("3. Save Goals");
             Console.WriteLine("4. Load Goals");
             Console.WriteLine("5. Record Event");
             Console.WriteLine("6. Quit");
-            Console.WriteLine();
+            Console.WriteLine("--------------------------");
             Console.Write("Select a choice from the menu: ");
             int option = Convert.ToInt32(Console.ReadLine());
             Console.WriteLine();
@@ -30,10 +32,10 @@ class Program
             switch (option)
             {
                 case 1:
-                    CreateGoalSubMenu();
+                    CreateGoal();
                     break;
                 case 2:
-                    ShowGoalList();
+                    ListGoals();
                     break;
                 case 3:
                     SaveGoals();
@@ -42,7 +44,7 @@ class Program
                     LoadGoals();
                     break;
                 case 5:
-                    RegisterEvent();
+                    RecordEvent();
                     break;
                 case 6:
                     exit = true;
@@ -56,17 +58,17 @@ class Program
         }
     }
 
-    static void CreateGoalSubMenu()
+    static void CreateGoal()
     {
-        Console.WriteLine("The types of Goals are:");
+        Console.WriteLine("----- Create Goal -----");
+        Console.WriteLine("Types of Goals:");
         Console.WriteLine("1. Simple Goal");
         Console.WriteLine("2. Eternal Goal");
         Console.WriteLine("3. Checklist Goal");
-        Console.Write("Which type of goal would you like to create? ");
-        int option = Convert.ToInt32(Console.ReadLine());
-        Console.WriteLine();
+        Console.Write("Enter the type of goal: ");
+        int typeOption = Convert.ToInt32(Console.ReadLine());
 
-        switch (option)
+        switch (typeOption)
         {
             case 1:
                 CreateSimpleGoal();
@@ -75,7 +77,7 @@ class Program
                 CreateEternalGoal();
                 break;
             case 3:
-                CreateCheckListGoal();
+                CreateChecklistGoal();
                 break;
             default:
                 Console.WriteLine("Invalid option. Try again.");
@@ -86,11 +88,11 @@ class Program
     static void CreateSimpleGoal()
     {
         Console.WriteLine("----- Create Simple Goal -----");
-        Console.Write("Enter the Goal name: ");
+        Console.Write("Enter the goal name: ");
         string name = Console.ReadLine();
         Console.Write("What is a short description of your goal?: ");
         string description = Console.ReadLine();
-        Console.Write("Enter the Goal value: ");
+        Console.Write("Enter the goal value: ");
         int value = Convert.ToInt32(Console.ReadLine());
 
         SimpleGoal goal = new SimpleGoal
@@ -99,18 +101,18 @@ class Program
             Value = value,
         };
 
-        goals.Add(goal);
+        _goals.Add(goal);
         Console.WriteLine($"The simple goal '{name}' has been created.");
     }
 
     static void CreateEternalGoal()
     {
         Console.WriteLine("----- Create Eternal Goal -----");
-        Console.Write("Enter the Goal name: ");
+        Console.Write("Enter the goal name: ");
         string name = Console.ReadLine();
         Console.Write("What is a short description of your goal?: ");
         string description = Console.ReadLine();
-        Console.Write("Enter the Goal value: ");
+        Console.Write("Enter the goal value: ");
         int value = Convert.ToInt32(Console.ReadLine());
 
         EternalGoal goal = new EternalGoal
@@ -119,14 +121,14 @@ class Program
             Value = value
         };
 
-        goals.Add(goal);
+        _goals.Add(goal);
         Console.WriteLine($"The eternal goal '{name}' has been created.");
     }
 
-    static void CreateCheckListGoal()
+    static void CreateChecklistGoal()
     {
         Console.WriteLine("----- Create Checklist Goal -----");
-        Console.Write("Enter the Goal name: ");
+        Console.Write("Enter the goal name: ");
         string name = Console.ReadLine();
         Console.Write("Enter the desired count: ");
         int desiredCount = Convert.ToInt32(Console.ReadLine());
@@ -137,24 +139,29 @@ class Program
         {
             Name = name,
             DesiredCount = desiredCount,
-            Bonus = bonus
+            Bonus = bonus,
+
+            CompletionCount = 0
         };
 
-        goals.Add(goal);
+        _goals.Add(goal);
         Console.WriteLine($"The checklist goal '{name}' has been created.");
     }
 
-    static void RegisterEvent()
+    static void RecordEvent()
     {
-        Console.WriteLine("----- Register Event -----");
-        Console.Write("Enter the Goal name: ");
+        Console.WriteLine("----- Record Event -----");
+        Console.Write("Enter the goal name: ");
         string name = Console.ReadLine();
 
-        Goal goal = goals.Find(g => g.Name == name);
+        Goal goal = _goals.Find(g => g.Name == name);
         if (goal != null && goal is CheckListGoal checklistGoal)
         {
             checklistGoal.RegisterEvent();
-            score += checklistGoal.Bonus;
+            _score += checklistGoal.Bonus;
+
+            Console.WriteLine("Event recorded successfully.");
+            Console.WriteLine("Current Score: " + _score);
         }
         else
         {
@@ -162,19 +169,32 @@ class Program
         }
     }
 
-    static void ShowGoalList()
+    static void ListGoals()
+{
+    Console.WriteLine("----- Goal List -----");
+    foreach (Goal goal in _goals)
     {
-        Console.WriteLine("----- Goal List -----");
-        foreach (Goal goal in goals)
+        Console.Write("[");
+            if (!goal.IsCompleted)
+                Console.Write(" ");
+            else
+                Console.Write("X");
+            Console.Write("] ");
+
+        if (goal is CheckListGoal checklistGoal)
         {
-            Console.WriteLine();
-            goal.ShowDetails();
+            Console.WriteLine($"{goal.Name} - Completed {checklistGoal.CompletionCount}/{checklistGoal.DesiredCount} times");
+        }
+        else
+        {
+            Console.WriteLine(goal.Name);
         }
     }
+}
 
     static void SaveGoals()
     {
-        string json = JsonSerializer.Serialize(goals);
+        string json = JsonSerializer.Serialize(_goals);
         File.WriteAllText("goals.json", json);
         Console.WriteLine("Goals saved successfully.");
     }
@@ -184,7 +204,7 @@ class Program
         if (File.Exists("goals.json"))
         {
             string json = File.ReadAllText("goals.json");
-            goals = JsonSerializer.Deserialize<List<Goal>>(json);
+            _goals = JsonSerializer.Deserialize<List<Goal>>(json);
             Console.WriteLine("Goals loaded successfully.");
         }
         else

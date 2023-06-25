@@ -4,6 +4,7 @@ class Goal
 {
     public string Name { get; set; }
     public bool Completed { get; set; }
+    public bool IsCompleted { get; internal set; }
 
     public virtual void MarkAsCompleted()
     {
