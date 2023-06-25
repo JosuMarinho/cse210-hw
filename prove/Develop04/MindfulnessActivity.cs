@@ -7,7 +7,7 @@ public abstract class MindfulnessActivity
     public string Description { get; protected set; }
     public int Duration { get; set; }
 
-    public async void Start()
+    public void Start()
     {
         Console.WriteLine("");
         Console.WriteLine($"Starting {Name}...");
@@ -17,16 +17,16 @@ public abstract class MindfulnessActivity
         Console.WriteLine($"Duration: {Duration} seconds");
         Console.WriteLine("");
         Console.WriteLine("Get ready...");
-    
+
 
         List<string> animationStrings = new List<string>();
-        animationStrings.Add (" |"); 
-        animationStrings.Add("/"); 
-        animationStrings.Add("-"); 
+        animationStrings.Add(" |");
+        animationStrings.Add("/");
+        animationStrings.Add("-");
         animationStrings.Add("\\");
-        animationStrings.Add("|"); 
-        animationStrings.Add("/"); 
-        animationStrings.Add("_"); 
+        animationStrings.Add("|");
+        animationStrings.Add("/");
+        animationStrings.Add("_");
         animationStrings.Add("\\");
 
         foreach (string animationString in animationStrings)
