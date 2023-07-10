@@ -99,6 +99,7 @@ class Program
         {
             Name = name,
             Value = value,
+            Completed = false
         };
 
         _goals.Add(goal);
@@ -170,25 +171,46 @@ class Program
     }
 
     static void ListGoals()
-{
-    Console.WriteLine("----- Goal List -----");
-    foreach (Goal goal in _goals)
     {
-        Console.Write("[");
+        Console.WriteLine("----- Goal List -----");
+        foreach (Goal goal in _goals)
+        {
+            Console.Write("[");
             if (!goal.IsCompleted)
                 Console.Write(" ");
             else
                 Console.Write("X");
             Console.Write("] ");
 
-        if (goal is CheckListGoal checklistGoal)
+            if (goal is CheckListGoal checklistGoal)
+            {
+                Console.WriteLine($"{goal.Name} - Completed {checklistGoal.CompletionCount}/{checklistGoal.DesiredCount} times");
+            }
+            else
+            {
+                Console.WriteLine(goal.Name);
+            }
+        }
+    }
+    static void MarkGoalAsCompleted(string goalName)
+{
+    Goal goal = _goals.Find(g => g.Name == goalName);
+    if (goal != null && goal is SimpleGoal simpleGoal)
+    {
+        if (!simpleGoal.Completed)
         {
-            Console.WriteLine($"{goal.Name} - Completed {checklistGoal.CompletionCount}/{checklistGoal.DesiredCount} times");
+            simpleGoal.MarkAsCompleted();
+            _score += simpleGoal.Value;
+            Console.WriteLine($"Goal '{goalName}' marked as completed.");
         }
         else
         {
-            Console.WriteLine(goal.Name);
+            Console.WriteLine($"Goal '{goalName}' is already completed.");
         }
+    }
+    else
+    {
+        Console.WriteLine("No simple goal found with that name.");
     }
 }
 
