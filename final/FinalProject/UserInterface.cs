@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 public class UserInterface
 {
@@ -101,7 +102,39 @@ public class UserInterface
         inventory.AddProduct(product5);
         inventory.AddProduct(product6);
         inventory.AddProduct(product7);
+
+        try
+        {
+            string[] lines = File.ReadAllLines("recipe.txt");
+
+            foreach (string line in lines)
+            {
+                string[] parts = line.Split(',');
+
+                string recipeName = parts[0]; // Nombre de la receta
+                List<Product> ingredients = new List<Product>();
+
+                for (int i = 1; i < parts.Length; i++)
+                {
+                    string ingredientName = parts[i];
+                    ingredients.Add(new Product { Name = ingredientName, Price = 0 });
+                }
+
+                Recipe newRecipe = new Recipe { Name = recipeName, Ingredients = ingredients };
+                menu.AddItem(newRecipe);
+            }
+        }
+        catch (FileNotFoundException)
+        {
+            Console.WriteLine("Error: File not found. No recipes were added from the file.");
+        }
+
+
+
     }
+
+
+
 
     private void ShowWeeklyMenu()
     {
@@ -142,9 +175,13 @@ public class UserInterface
         }
     }
 
-    Recipe newRecipe = new Recipe { Name = recipeName, Ingredients = ingredients };
-    menu.AddItem(newRecipe);
-    Console.WriteLine("Recipe added to the menu successfully.");
+        Recipe newRecipe = new Recipe { Name = recipeName, Ingredients = ingredients };
+        menu.AddItem(newRecipe);
+        Console.WriteLine("Recipe added to the menu successfully.");
+
+    // Guardar las recetas en el archivo "recipe.txt"
+        SaveRecipesToFile();
+
 }
 
     private void RemoveRecipe()
@@ -165,6 +202,7 @@ public class UserInterface
         {
             Console.WriteLine("Invalid option.");
         }
+        SaveRecipesToFile();
     }
 
     private void GenerateShoppingList()
@@ -172,5 +210,27 @@ public class UserInterface
         List<Recipe> selectedRecipes = menuPlanner.SelectRecipes(menu.MenuItems);
         ShoppingList shoppingList = menuPlanner.GenerateShoppingList(selectedRecipes);
         shoppingList.ShowShoppingList();
+    }
+    private void SaveRecipesToFile()
+    {
+        try
+        {
+            using (StreamWriter writer = new StreamWriter("recipe.txt"))
+            {
+                foreach (var recipe in menu.MenuItems)
+                {
+                    writer.Write(recipe.Name + ",");
+                    foreach (var ingredient in recipe.Ingredients)
+                    {
+                        writer.Write(ingredient.Name + ",");
+                    }
+                    writer.WriteLine();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: Failed to write recipes to file. {ex.Message}");
+        }
     }
 }
