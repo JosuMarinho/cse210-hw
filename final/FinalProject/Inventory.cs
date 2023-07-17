@@ -4,21 +4,21 @@ using System.IO;
 
 public class Inventory
 {
-    private List<Product> products;
+    private List<Product> _products;
 
     public Inventory()
     {
-        products = new List<Product>();
+        _products = new List<Product>();
     }
 
     public void AddProduct(Product product)
     {
-        products.Add(product);
+        _products.Add(product);
     }
 
     public void RemoveProduct(Product product)
     {
-        products.Remove(product);
+        _products.Remove(product);
     }
 
     public bool CheckAvailability(Recipe recipe)
@@ -26,7 +26,7 @@ public class Inventory
         foreach (var ingredient in recipe.Ingredients)
         {
             bool ingredientFound = false;
-            foreach (var product in products)
+            foreach (var product in _products)
             {
                 if (product.Name == ingredient.Name)
                 {
@@ -47,7 +47,7 @@ private void SaveInventoryToFile()
         {
             using (StreamWriter writer = new StreamWriter("recipe.txt"))
             {
-                foreach (var product in products)
+                foreach (var product in _products)
                 {
                     writer.WriteLine($"{product.Name},{product.Price}");
                 }
@@ -77,7 +77,7 @@ private void SaveInventoryToFile()
                             decimal productPrice;
                             if (decimal.TryParse(parts[1], out productPrice))
                             {
-                                products.Add(new Product { Name = productName, Price = productPrice });
+                                _products.Add(new Product { Name = productName, Price = productPrice });
                             }
                         }
                     }

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 public class MenuPlanner
 {
-    private Inventory inventory;
+    private Inventory _inventory;
 
     public MenuPlanner(Inventory inventory)
     {
-        this.inventory = inventory;
+        _inventory = inventory;
     }
 
     public List<Recipe> SelectRecipes(List<Recipe> availableRecipes)
@@ -15,7 +15,7 @@ public class MenuPlanner
         List<Recipe> selectedRecipes = new List<Recipe>();
         foreach (var recipe in availableRecipes)
         {
-            if (inventory.CheckAvailability(recipe))
+            if (_inventory.CheckAvailability(recipe))
             {
                 selectedRecipes.Add(recipe);
             }

@@ -4,15 +4,15 @@ using System.IO;
 
 public class UserInterface
 {
-    private Menu menu;
-    private MenuPlanner menuPlanner;
-    private Inventory inventory;
+    private Menu _menu;
+    private MenuPlanner _menuPlanner;
+    private Inventory _inventory;
 
     public UserInterface()
     {
-        menu = new Menu();
-        inventory = new Inventory();
-        menuPlanner = new MenuPlanner(inventory);
+        _menu = new Menu();
+        _inventory = new Inventory();
+        _menuPlanner = new MenuPlanner(_inventory);
         InitializeMenu();
         InitializeInventory();
     }
@@ -81,8 +81,8 @@ public class UserInterface
             }
         };
 
-        menu.AddItem(recipe1);
-        menu.AddItem(recipe2);
+        _menu.AddItem(recipe1);
+        _menu.AddItem(recipe2);
     }
 
     private void InitializeInventory()
@@ -95,13 +95,13 @@ public class UserInterface
         Product product6 = new Product() { Name = "Croutons", Price = 2 };
         Product product7 = new Product() { Name = "Caesar Dressing", Price = 2 };
 
-        inventory.AddProduct(product1);
-        inventory.AddProduct(product2);
-        inventory.AddProduct(product3);
-        inventory.AddProduct(product4);
-        inventory.AddProduct(product5);
-        inventory.AddProduct(product6);
-        inventory.AddProduct(product7);
+        _inventory.AddProduct(product1);
+        _inventory.AddProduct(product2);
+        _inventory.AddProduct(product3);
+        _inventory.AddProduct(product4);
+        _inventory.AddProduct(product5);
+        _inventory.AddProduct(product6);
+        _inventory.AddProduct(product7);
 
         try
         {
@@ -121,7 +121,7 @@ public class UserInterface
                 }
 
                 Recipe newRecipe = new Recipe { Name = recipeName, Ingredients = ingredients };
-                menu.AddItem(newRecipe);
+                _menu.AddItem(newRecipe);
             }
         }
         catch (FileNotFoundException)
@@ -138,7 +138,7 @@ public class UserInterface
 
     private void ShowWeeklyMenu()
     {
-        menu.ShowMenu();
+        _menu.ShowMenu();
     }
 
     private void AddRecipe()
@@ -176,7 +176,7 @@ public class UserInterface
     }
 
         Recipe newRecipe = new Recipe { Name = recipeName, Ingredients = ingredients };
-        menu.AddItem(newRecipe);
+        _menu.AddItem(newRecipe);
         Console.WriteLine("Recipe added to the menu successfully.");
 
     // Guardar las recetas en el archivo "recipe.txt"
@@ -187,15 +187,15 @@ public class UserInterface
     private void RemoveRecipe()
     {
         Console.WriteLine("Select the recipe you want to remove:");
-        for (int i = 0; i < menu.MenuItems.Count; i++)
+        for (int i = 0; i < _menu.MenuItems.Count; i++)
         {
-            Console.WriteLine($"{i + 1}. {menu.MenuItems[i].Name}");
+            Console.WriteLine($"{i + 1}. {_menu.MenuItems[i].Name}");
         }
 
         Console.Write("Enter the number of the recipe: ");
-        if (int.TryParse(Console.ReadLine(), out int option) && option >= 1 && option <= menu.MenuItems.Count)
+        if (int.TryParse(Console.ReadLine(), out int option) && option >= 1 && option <= _menu.MenuItems.Count)
         {
-            menu.RemoveItem(menu.MenuItems[option - 1]);
+            _menu.RemoveItem(_menu.MenuItems[option - 1]);
             Console.WriteLine("Recipe removed successfully.");
         }
         else
@@ -207,8 +207,8 @@ public class UserInterface
 
     private void GenerateShoppingList()
     {
-        List<Recipe> selectedRecipes = menuPlanner.SelectRecipes(menu.MenuItems);
-        ShoppingList shoppingList = menuPlanner.GenerateShoppingList(selectedRecipes);
+        List<Recipe> selectedRecipes = _menuPlanner.SelectRecipes(_menu.MenuItems);
+        ShoppingList shoppingList = _menuPlanner.GenerateShoppingList(selectedRecipes);
         shoppingList.ShowShoppingList();
     }
     private void SaveRecipesToFile()
@@ -217,7 +217,7 @@ public class UserInterface
         {
             using (StreamWriter writer = new StreamWriter("recipe.txt"))
             {
-                foreach (var recipe in menu.MenuItems)
+                foreach (var recipe in _menu.MenuItems)
                 {
                     writer.Write(recipe.Name + ",");
                     foreach (var ingredient in recipe.Ingredients)

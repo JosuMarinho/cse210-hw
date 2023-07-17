@@ -3,27 +3,27 @@ using System.Collections.Generic;
 
 public class Menu
 {
-    private List<Recipe> menuItems;
+    private List<Recipe> _menuItems;
 
     public Menu()
     {
-        menuItems = new List<Recipe>();
+        _menuItems = new List<Recipe>();
     }
 
     public void AddItem(Recipe recipe)
     {
-        menuItems.Add(recipe);
+        _menuItems.Add(recipe);
     }
 
     public void RemoveItem(Recipe recipe)
     {
-        menuItems.Remove(recipe);
+        _menuItems.Remove(recipe);
     }
 
     public void ShowMenu()
     {
         Console.WriteLine("Weekly Menu:");
-        foreach (var recipe in menuItems)
+        foreach (var recipe in _menuItems)
         {
             Console.WriteLine(recipe.Name);
         }
@@ -31,6 +31,6 @@ public class Menu
 
     public List<Recipe> MenuItems
     {
-        get { return menuItems; }
+        get { return _menuItems; }
     }
 }
