@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+
 public class ShoppingList
 {
     private List<Product> _products;

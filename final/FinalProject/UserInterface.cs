@@ -14,7 +14,7 @@ public class UserInterface
         _inventory = new Inventory();
         _menuPlanner = new MenuPlanner(_inventory);
         InitializeMenu();
-        InitializeInventory();
+        _inventory.LoadInventoryFromFile();
     }
 
     public void Run()
@@ -85,104 +85,52 @@ public class UserInterface
         _menu.AddItem(recipe2);
     }
 
-    private void InitializeInventory()
-    {
-        Product product1 = new Product() { Name = "Pasta", Price = 5 };
-        Product product2 = new Product() { Name = "Tomato Sauce", Price = 4 };
-        Product product3 = new Product() { Name = "Grated Cheese", Price = 3 };
-        Product product4 = new Product() { Name = "Lettuce", Price = 1 };
-        Product product5 = new Product() { Name = "Chicken", Price = 10 };
-        Product product6 = new Product() { Name = "Croutons", Price = 2 };
-        Product product7 = new Product() { Name = "Caesar Dressing", Price = 2 };
-
-        _inventory.AddProduct(product1);
-        _inventory.AddProduct(product2);
-        _inventory.AddProduct(product3);
-        _inventory.AddProduct(product4);
-        _inventory.AddProduct(product5);
-        _inventory.AddProduct(product6);
-        _inventory.AddProduct(product7);
-
-        try
-        {
-            string[] lines = File.ReadAllLines("recipe.txt");
-
-            foreach (string line in lines)
-            {
-                string[] parts = line.Split(',');
-
-                string recipeName = parts[0]; // Nombre de la receta
-                List<Product> ingredients = new List<Product>();
-
-                for (int i = 1; i < parts.Length; i++)
-                {
-                    string ingredientName = parts[i];
-                    ingredients.Add(new Product { Name = ingredientName, Price = 0 });
-                }
-
-                Recipe newRecipe = new Recipe { Name = recipeName, Ingredients = ingredients };
-                _menu.AddItem(newRecipe);
-            }
-        }
-        catch (FileNotFoundException)
-        {
-            Console.WriteLine("Error: File not found. No recipes were added from the file.");
-        }
-
-
-
-    }
-
-
-
-
     private void ShowWeeklyMenu()
     {
         _menu.ShowMenu();
     }
 
     private void AddRecipe()
-{
-    Console.WriteLine("Add new recipe:");
-
-    Console.Write("Enter the recipe name: ");
-    string recipeName = Console.ReadLine();
-
-    List<Product> ingredients = new List<Product>();
-
-    bool addIngredients = true;
-    while (addIngredients)
     {
-        Console.Write("Enter the ingredient name (or '0' to finish): ");
-        string ingredientName = Console.ReadLine();
+        Console.WriteLine("Add new recipe:");
 
-        if (ingredientName == "0")
+        Console.Write("Enter the recipe name: ");
+        string recipeName = Console.ReadLine();
+
+        List<Product> ingredients = new List<Product>();
+
+        bool addIngredients = true;
+        while (addIngredients)
         {
-            addIngredients = false;
-        }
-        else
-        {
-            Console.Write("Enter the ingredient price: ");
-            decimal ingredientPrice;
-            if (decimal.TryParse(Console.ReadLine(), out ingredientPrice))
+            Console.Write("Enter the ingredient name (or '0' to finish): ");
+            string ingredientName = Console.ReadLine();
+
+            if (ingredientName == "0")
             {
-                ingredients.Add(new Product { Name = ingredientName, Price = ingredientPrice });
+                addIngredients = false;
             }
             else
             {
-                Console.WriteLine("Invalid price. The ingredient will not be added.");
+                Console.Write("Enter the ingredient price: ");
+                decimal ingredientPrice;
+                if (decimal.TryParse(Console.ReadLine(), out ingredientPrice))
+                {
+                    ingredients.Add(new Product { Name = ingredientName, Price = ingredientPrice });
+                }
+                else
+                {
+                    Console.WriteLine("Invalid price. The ingredient will not be added.");
+                }
             }
         }
-    }
 
         Recipe newRecipe = new Recipe { Name = recipeName, Ingredients = ingredients };
         _menu.AddItem(newRecipe);
         Console.WriteLine("Recipe added to the menu successfully.");
 
-    // Guardar las recetas en el archivo "recipe.txt"
+        // Guardar las recetas en el archivo "recipe.txt"
         SaveRecipesToFile();
-
-}
+    }
 
     private void RemoveRecipe()
     {
@@ -211,6 +159,7 @@ public class UserInterface
         ShoppingList shoppingList = _menuPlanner.GenerateShoppingList(selectedRecipes);
         shoppingList.ShowShoppingList();
     }
+
     private void SaveRecipesToFile()
     {
         try
@@ -228,7 +177,7 @@ public class UserInterface
                 }
             }
         }
-        catch (Exception ex)
+        catch (IOException ex)
         {
             Console.WriteLine($"Error: Failed to write recipes to file. {ex.Message}");
         }

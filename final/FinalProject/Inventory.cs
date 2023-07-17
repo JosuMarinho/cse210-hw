@@ -41,11 +41,12 @@ public class Inventory
         }
         return true;
     }
-private void SaveInventoryToFile()
+
+    public void SaveInventoryToFile()
     {
         try
         {
-            using (StreamWriter writer = new StreamWriter("recipe.txt"))
+            using (StreamWriter writer = new StreamWriter("inventory.txt"))
             {
                 foreach (var product in _products)
                 {
@@ -53,19 +54,19 @@ private void SaveInventoryToFile()
                 }
             }
         }
-        catch (Exception ex)
+        catch (IOException ex)
         {
             Console.WriteLine($"Error: Failed to write inventory to file. {ex.Message}");
         }
     }
 
-    private void LoadInventoryFromFile()
+    public void LoadInventoryFromFile()
     {
-        if (File.Exists("recipe.txt"))
+        if (File.Exists("inventory.txt"))
         {
             try
             {
-                using (StreamReader reader = new StreamReader("recipe.txt"))
+                using (StreamReader reader = new StreamReader("inventory.txt"))
                 {
                     string line;
                     while ((line = reader.ReadLine()) != null)
@@ -83,15 +84,10 @@ private void SaveInventoryToFile()
                     }
                 }
             }
-            catch (Exception ex)
+            catch (IOException ex)
             {
                 Console.WriteLine($"Error: Failed to load inventory from file. {ex.Message}");
             }
         }
-    }
-
-    internal void SaveRecipesToFile()
-    {
-        throw new NotImplementedException();
     }
 }
